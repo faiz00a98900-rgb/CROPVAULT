@@ -1,0 +1,205 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: #e9e4d8;
+  background-image: radial-gradient(
+      1200px 600px at 12% -10%,
+      rgba(255, 255, 255, 0.55),
+      transparent 60%
+    ),
+    radial-gradient(1000px 700px at 110% 10%, rgba(210, 200, 175, 0.35), transparent 55%);
+  color: #2e3a2f;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ---------- Reusable neumorphic primitives ---------- */
+@layer components {
+  .neu-card {
+    @apply rounded-xl2 bg-base shadow-neu;
+  }
+  .neu-raised {
+    @apply rounded-xl2 bg-base shadow-neu-sm;
+  }
+  .neu-inset {
+    @apply rounded-xl2 bg-base shadow-inset;
+  }
+  .neu-inset-sm {
+    @apply rounded-xl bg-base shadow-inset-sm;
+  }
+
+  .neu-btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl bg-base px-4 py-2.5
+      text-sm font-semibold text-ink shadow-neu-sm transition-all duration-150
+      active:shadow-pressed active:translate-y-[1px];
+  }
+  .neu-btn:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+  .neu-btn-primary {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl bg-leaf-dark px-4 py-2.5
+      text-sm font-semibold text-base shadow-[6px_6px_14px_rgba(163,153,128,0.6),-6px_-6px_14px_rgba(255,255,255,0.8)]
+      transition-all duration-150 active:translate-y-[1px] active:brightness-95;
+  }
+  .neu-btn-danger {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl bg-chili px-4 py-2.5
+      text-sm font-semibold text-white shadow-neu-sm transition-all duration-150
+      active:translate-y-[1px] active:brightness-95;
+  }
+  .neu-btn-ghost {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm
+      font-semibold text-ink-soft transition-all duration-150 hover:text-ink active:scale-95;
+  }
+
+  .neu-input {
+    @apply w-full rounded-xl bg-base px-4 py-3 text-sm text-ink placeholder:text-ink-faint
+      shadow-inset-sm outline-none transition focus:shadow-inset;
+  }
+  .neu-label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-ink-faint;
+  }
+
+  .neu-chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+
+  .neu-icon-btn {
+    @apply relative inline-flex h-10 w-10 items-center justify-center rounded-xl bg-base text-ink-soft
+      shadow-neu-sm transition-all duration-150 active:shadow-pressed active:translate-y-[1px];
+  }
+
+  .neu-nav-item {
+    @apply flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-ink-soft
+      transition-all duration-150 hover:text-ink;
+  }
+  .neu-nav-item[data-active="true"] {
+    @apply text-leaf-dark shadow-inset-sm;
+  }
+}
+
+/* ---------- Micro-interactions ---------- */
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.toast-in {
+  animation: toastIn 0.25s ease-out;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-up {
+  animation: fadeUp 0.35s ease-out both;
+}
+
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.pop-in {
+  animation: pop 0.18s ease-out both;
+}
+
+@keyframes drawerIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.drawer-in {
+  animation: drawerIn 0.22s ease-out both;
+}
+
+@keyframes livePulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.82);
+  }
+}
+.live-dot {
+  animation: livePulse 1.6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.skeleton {
+  @apply relative overflow-hidden rounded-xl bg-base-deep/60;
+}
+.skeleton::after {
+  content: "";
+  @apply absolute inset-0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+  animation: shimmer 1.4s infinite;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cfc7b4;
+  border-radius: 999px;
+  border: 2px solid #e9e4d8;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Freshness bar fill */
+.fresh-track {
+  @apply h-2.5 w-full overflow-hidden rounded-full bg-base shadow-inset-sm;
+}
