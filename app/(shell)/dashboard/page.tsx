@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { PackagePlus, RefreshCw, ScanLine } from "lucide-react";
 import { useStore } from "@/providers/store";
+import { useLanguage } from "@/lib/i18n";
 import { useNow } from "@/components/Clock";
 import { timeAgo } from "@/lib/time";
 import { totalStockKg, categoryTotals } from "@/lib/selectors";
@@ -29,6 +30,7 @@ export default function DashboardPage() {
     lastSync,
     can,
   } = useStore();
+  const { t, tl } = useLanguage();
   useNow(1000); // force re-render each second for live "synced" label
 
   // KPIs, needs-attention and the donut all scope to the active warehouse.
@@ -50,25 +52,25 @@ export default function DashboardPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-black tracking-tight text-ink">
-            Welcome back, {firstName} 👋
+            {t("page.dashboard.welcome", { name: firstName })}
           </h1>
           <p className="text-sm text-ink-soft">
-            {activeWh ? `${activeWh.name} · ${activeWh.location}` : "Your warehouse at a glance"}
+            {activeWh ? `${activeWh.name} · ${activeWh.location}` : tl("Your warehouse at a glance")}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="neu-inset-sm flex items-center gap-2 px-3 py-2 text-xs">
             <span className="flex items-center gap-1 font-bold uppercase tracking-wide text-leaf">
-              <span className="live-dot h-2 w-2 rounded-full bg-leaf" /> Live
+              <span className="live-dot h-2 w-2 rounded-full bg-leaf" /> {tl("Live")}
             </span>
             <span className="text-ink-faint">
-              Last synchronized: {timeAgo(lastSync)}
+              {tl("Last synchronized")}: {timeAgo(lastSync)}
             </span>
             <RefreshCw className="h-3.5 w-3.5 text-ink-faint" />
           </div>
           {can("add_inventory") && (
             <Link href="/add-inventory" className="neu-btn-primary !py-2.5 text-sm">
-              <PackagePlus className="h-4 w-4" /> Add Inventory
+              <PackagePlus className="h-4 w-4" /> {tl("Add Inventory")}
             </Link>
           )}
         </div>
@@ -78,7 +80,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <KpiCard
           icon={KPI_ICONS.stock}
-          label="Total Stock"
+          label={tl("Total Stock")}
           value={fmtKg(totalStock)}
           sub={`across ${fmt(scopedBatches.length)} active batches`}
           tone="leaf"
@@ -86,21 +88,21 @@ export default function DashboardPage() {
         />
         <KpiCard
           icon={KPI_ICONS.batches}
-          label="Total Batches"
+          label={tl("Total Batches")}
           value={fmt(scopedBatches.length)}
           sub="tracked units"
           tone="sky"
         />
         <KpiCard
           icon={KPI_ICONS.warehouses}
-          label="Warehouses"
+          label={tl("Warehouses")}
           value={fmt(user?.role === "MANAGER" ? warehouses.length : (user?.warehouseIds.length ?? 0))}
           sub="in your scope"
           tone="leaf"
         />
         <KpiCard
           icon={KPI_ICONS.attention}
-          label="Needs Attention"
+          label={tl("Needs Attention")}
           value={fmt(attention.length)}
           sub={`${openAlerts} open alerts`}
           tone={attention.length ? "chili" : "leaf"}
@@ -130,14 +132,15 @@ export default function DashboardPage() {
             <ScanLine className="h-5 w-5" />
           </span>
           <div className="flex-1">
-            <p className="text-sm font-bold text-ink">Scanning is optional</p>
+            <p className="text-sm font-bold text-ink">{tl("Scanning is optional")}</p>
             <p className="text-xs text-ink-soft">
-              Scan an existing QR/barcode once to identify a batch, or enter details manually —
-              you never need to re-scan to review what is stored.
+              {tl(
+                "Scan an existing QR/barcode once to identify a batch, or enter details manually — you never need to re-scan to review what is stored."
+              )}
             </p>
           </div>
           <Link href="/add-inventory" className="neu-btn text-sm">
-            Open scanner
+            {tl("Open scanner")}
           </Link>
         </div>
       )}

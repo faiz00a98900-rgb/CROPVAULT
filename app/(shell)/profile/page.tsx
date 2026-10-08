@@ -3,6 +3,7 @@
 import { Mail, ShieldCheck, MapPin, BadgeCheck, KeyRound } from "lucide-react";
 import { useStore } from "@/providers/store";
 import { useToast } from "@/providers/toast";
+import { useLanguage } from "@/lib/i18n";
 import { Card } from "@/components/ui";
 import { warehouses } from "@/lib/demo-data";
 import { istDateShort } from "@/lib/time";
@@ -11,6 +12,7 @@ import { fmt } from "@/lib/format";
 export default function ProfilePage() {
   const { user, batches, movements, audit } = useStore();
   const { toast } = useToast();
+  const { t } = useLanguage();
   if (!user) return null;
 
   const assigned = warehouses.filter((w) => user.warehouseIds.includes(w.id));
@@ -19,7 +21,7 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-5">
-      <h1 className="text-2xl font-black tracking-tight text-ink">User Profile</h1>
+      <h1 className="text-2xl font-black tracking-tight text-ink">{t("page.profile.title")}</h1>
 
       <Card className="p-5">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">

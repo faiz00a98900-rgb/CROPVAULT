@@ -5,14 +5,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Search, Bell, Warehouse as WhIcon, ChevronDown, Menu } from "lucide-react";
 import { useStore } from "@/providers/store";
+import { useLanguage } from "@/lib/i18n";
 import { warehouses } from "@/lib/demo-data";
 import { LiveClock } from "./Clock";
+import { LanguageSelector } from "./LanguageSelector";
 import { cn } from "@/lib/cn";
 
 export function TopBar({ onMenu }: { onMenu: () => void }) {
   const router = useRouter();
   const { user, alerts, activeWarehouseId, setActiveWarehouse, accessibleWarehouseIds } =
     useStore();
+  const { t } = useLanguage();
   const [query, setQuery] = useState("");
   const [whOpen, setWhOpen] = useState(false);
 
@@ -42,9 +45,9 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search inventory, crop or batch…"
+            placeholder={t("topbar.search")}
             className="neu-input !py-2.5 pl-10"
-            aria-label="Search inventory"
+            aria-label={t("topbar.search")}
           />
         </form>
 
@@ -58,7 +61,7 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
           >
             <WhIcon className="h-4 w-4 text-leaf-dark" />
             <span className="hidden max-w-[110px] truncate sm:inline">
-              {activeWh?.name ?? "Warehouse"}
+              {activeWh?.name ?? t("topbar.warehouse")}
             </span>
             <ChevronDown className="h-4 w-4 text-ink-faint" />
           </button>
@@ -67,7 +70,7 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
               <div className="fixed inset-0 z-10" onClick={() => setWhOpen(false)} />
               <div className="absolute right-0 z-20 mt-2 w-56 rounded-xl2 bg-base p-2 shadow-neu">
                 <p className="px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-ink-faint">
-                  Current warehouse
+                  {t("topbar.currentWarehouse")}
                 </p>
                 {options.map((w) => (
                   <button
@@ -90,8 +93,11 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
           )}
         </div>
 
+        {/* Language selector */}
+        <LanguageSelector />
+
         {/* Notifications */}
-        <Link href="/alerts" className="neu-icon-btn" aria-label="Notifications">
+        <Link href="/alerts" className="neu-icon-btn" aria-label={t("topbar.notifications")}>
           <Bell className="h-5 w-5" />
           {openAlerts > 0 && (
             <span className="absolute -right-1 -top-1 grid h-5 min-w-[20px] place-items-center rounded-full bg-chili px-1 text-[10px] font-bold text-white shadow-neu-xs">

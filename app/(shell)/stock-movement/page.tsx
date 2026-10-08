@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useStore } from "@/providers/store";
 import { useToast } from "@/providers/toast";
+import { useLanguage } from "@/lib/i18n";
 import { Card, EmptyState } from "@/components/ui";
 import { ConfirmDialog } from "@/components/Modal";
 import { warehouseRacks, warehouses, cropEmoji } from "@/lib/demo-data";
@@ -39,6 +40,7 @@ function MovementInner() {
   const params = useSearchParams();
   const { visibleBatches, movements, recordMovement, can } = useStore();
   const { toast } = useToast();
+  const { t, tl } = useLanguage();
 
   const [batchId, setBatchId] = useState(params.get("batch") ?? "");
   const [action, setAction] = useState<MovementAction>(
@@ -113,16 +115,16 @@ function MovementInner() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-black tracking-tight text-ink">Stock Movement</h1>
+        <h1 className="text-2xl font-black tracking-tight text-ink">{t("page.stockMovement.title")}</h1>
         <p className="text-sm text-ink-soft">
-          Record every change — each action creates a timestamped history record.
+          {t("page.stockMovement.subtitle")}
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {/* Form */}
         <Card className="p-5 lg:col-span-1">
-          <h2 className="mb-3 text-base font-bold text-ink">New movement</h2>
+          <h2 className="mb-3 text-base font-bold text-ink">{tl("New movement")}</h2>
 
           <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-2">
             {ACTIONS.map((a) => {
@@ -136,13 +138,13 @@ function MovementInner() {
                     action === a.key && "!shadow-inset " + a.tone
                   )}
                 >
-                  <Icon className="h-4 w-4" /> {a.label}
+                  <Icon className="h-4 w-4" /> {tl(a.label)}
                 </button>
               );
             })}
           </div>
 
-          <label className="neu-label">Batch</label>
+          <label className="neu-label">{tl("Batch")}</label>
           <select
             className="neu-input mb-3"
             value={batchId}
@@ -151,7 +153,7 @@ function MovementInner() {
               setToRack("");
             }}
           >
-            <option value="">Select batch…</option>
+            <option value="">{tl("Select batch…")}</option>
             {visibleBatches.map((b) => (
               <option key={b.id} value={b.id}>
                 {b.crop} · {b.id} ({fmt(b.quantity)} {b.unit})
@@ -167,7 +169,7 @@ function MovementInner() {
             </div>
           )}
 
-          <label className="neu-label">{selected.reduces || action === "ADD" ? "Quantity" : "Quantity"}</label>
+          <label className="neu-label">{tl("Quantity")}</label>
           <input
             className="neu-input mb-3"
             inputMode="decimal"
@@ -181,16 +183,16 @@ function MovementInner() {
 
           {selected.needsRack && (
             <>
-              <label className="neu-label">Destination rack</label>
+              <label className="neu-label">{tl("Destination rack")}</label>
               <select
                 className="neu-input mb-3"
                 value={toRack}
                 onChange={(e) => setToRack(e.target.value)}
               >
-                <option value="">Select rack…</option>
+                <option value="">{tl("Select rack…")}</option>
                 {rackOptions.map((r) => (
                   <option key={r} value={r}>
-                    Rack {r}
+                    {tl("Rack")} {r}
                   </option>
                 ))}
               </select>
@@ -210,17 +212,17 @@ function MovementInner() {
           >
             {busy ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Recording…
+                <Loader2 className="h-4 w-4 animate-spin" /> {tl("Recording…")}
               </>
             ) : (
               <>
-                <selected.icon className="h-4 w-4" /> {selected.label}
+                <selected.icon className="h-4 w-4" /> {tl(selected.label)}
               </>
             )}
           </button>
           {!can("record_movement") && (
             <p className="mt-2 text-center text-xs text-ink-faint">
-              Your role can’t record movements.
+              {tl("Your role can’t record movements.")}
             </p>
           )}
         </Card>
@@ -228,23 +230,23 @@ function MovementInner() {
         {/* History */}
         <Card className="p-0 lg:col-span-2">
           <div className="flex items-center justify-between p-5 pb-3">
-            <h2 className="text-base font-bold text-ink">Movement log</h2>
-            <span className="text-xs text-ink-faint">{fmt(movements.length)} records</span>
+            <h2 className="text-base font-bold text-ink">{tl("Movement log")}</h2>
+            <span className="text-xs text-ink-faint">{fmt(movements.length)} {tl("records")}</span>
           </div>
           {movements.length === 0 ? (
-            <EmptyState title="No movements yet" message="Recorded actions will appear here." />
+            <EmptyState title={tl("No movements yet")} message={tl("Recorded actions will appear here.")} />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="border-y border-white/50 text-[11px] uppercase tracking-wide text-ink-faint">
-                    <th className="px-4 py-2 font-semibold">Date</th>
-                    <th className="px-4 py-2 font-semibold">Time</th>
-                    <th className="px-4 py-2 font-semibold">Action</th>
-                    <th className="px-4 py-2 text-right font-semibold">Qty</th>
-                    <th className="px-4 py-2 font-semibold">Batch</th>
-                    <th className="px-4 py-2 font-semibold">From → To</th>
-                    <th className="px-4 py-2 font-semibold">By</th>
+                    <th className="px-4 py-2 font-semibold">{tl("Date")}</th>
+                    <th className="px-4 py-2 font-semibold">{tl("Time")}</th>
+                    <th className="px-4 py-2 font-semibold">{tl("Action")}</th>
+                    <th className="px-4 py-2 text-right font-semibold">{tl("Qty")}</th>
+                    <th className="px-4 py-2 font-semibold">{tl("Batch")}</th>
+                    <th className="px-4 py-2 font-semibold">{tl("From → To")}</th>
+                    <th className="px-4 py-2 font-semibold">{tl("By")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -259,7 +261,7 @@ function MovementInner() {
                           {istTime(m.at)}
                         </td>
                         <td className={cn("whitespace-nowrap px-4 py-2.5 font-semibold", a.tone)}>
-                          {a.label}
+                          {tl(a.label)}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2.5 text-right font-semibold text-ink">
                           {fmt(m.quantity)}

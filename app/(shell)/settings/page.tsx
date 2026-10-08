@@ -13,6 +13,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useStore } from "@/providers/store";
+import { useLanguage } from "@/lib/i18n";
 import { useToast } from "@/providers/toast";
 import { Card } from "@/components/ui";
 import { Modal } from "@/components/Modal";
@@ -32,6 +33,7 @@ type TabKey = "profile" | "warehouses" | "notifications" | "categories" | "users
 
 export default function SettingsPage() {
   const { user, can } = useStore();
+  const { t: tt } = useLanguage();
   const { toast } = useToast();
 
   const tabs: { key: TabKey; label: string; icon: typeof UserRound; managerOnly?: boolean }[] = [
@@ -48,8 +50,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-black tracking-tight text-ink">Settings</h1>
-        <p className="text-sm text-ink-soft">Manage your account and system configuration.</p>
+        <h1 className="text-2xl font-black tracking-tight text-ink">{tt("page.settings.title")}</h1>
+        <p className="text-sm text-ink-soft">{tt("page.settings.subtitle")}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_1fr]">

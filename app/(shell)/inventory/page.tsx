@@ -11,6 +11,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { useStore } from "@/providers/store";
+import { useLanguage } from "@/lib/i18n";
 import { Card, StatusBadge, EmptyState, Skeleton } from "@/components/ui";
 import { CATEGORIES, fifoPriorityMap } from "@/lib/selectors";
 import { computeFreshness } from "@/lib/freshness";
@@ -23,6 +24,7 @@ import { cn } from "@/lib/cn";
 
 function InventoryInner() {
   const { visibleBatches, activeWarehouseId } = useStore();
+  const { t, tl } = useLanguage();
   const params = useSearchParams();
 
   const [q, setQ] = useState(params.get("q") ?? "");
@@ -85,9 +87,9 @@ function InventoryInner() {
     <div className="space-y-5">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-ink">Inventory</h1>
+          <h1 className="text-2xl font-black tracking-tight text-ink">{t("page.inventory.title")}</h1>
           <p className="text-sm text-ink-soft">
-            {fmt(rows.length)} of {fmt(visibleBatches.length)} batches shown
+            {t("page.inventory.subtitle", { shown: fmt(rows.length), total: fmt(visibleBatches.length) })}
           </p>
         </div>
       </div>
@@ -100,20 +102,20 @@ function InventoryInner() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search crop, batch or rack…"
+              placeholder={tl("Search crop, batch or rack…")}
               className="neu-input pl-10"
             />
           </div>
           <select value={category} onChange={(e) => setCategory(e.target.value)} className="neu-input">
-            <option value="all">All categories</option>
+            <option value="all">{tl("All categories")}</option>
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>
-                {c}
+                {tl(c)}
               </option>
             ))}
           </select>
           <select value={warehouse} onChange={(e) => { setWarehouse(e.target.value); setLocation("all"); }} className="neu-input">
-            <option value="all">All warehouses</option>
+            <option value="all">{tl("All warehouses")}</option>
             {warehouses.map((w) => (
               <option key={w.id} value={w.id}>
                 {w.name}
@@ -121,25 +123,25 @@ function InventoryInner() {
             ))}
           </select>
           <select value={location} onChange={(e) => setLocation(e.target.value)} className="neu-input">
-            <option value="all">All locations</option>
+            <option value="all">{tl("All locations")}</option>
             {racksForWarehouse.map((r) => (
               <option key={r} value={r}>
-                Rack {r}
+                {tl("Rack")} {r}
               </option>
             ))}
           </select>
           <input
             value={batchFilter}
             onChange={(e) => setBatchFilter(e.target.value)}
-            placeholder="Filter batch #"
+            placeholder={tl("Filter batch #")}
             className="neu-input"
           />
           <select value={status} onChange={(e) => setStatus(e.target.value)} className="neu-input">
-            <option value="all">All statuses</option>
+            <option value="all">{tl("All statuses")}</option>
             {(["FRESH", "GOOD", "SELL SOON", "URGENT", "CRITICAL", "INSPECT"] as FreshnessStatus[]).map(
               (s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {tl(s)}
                 </option>
               )
             )}
@@ -150,9 +152,9 @@ function InventoryInner() {
               className="neu-btn flex-1 text-sm"
             >
               <ArrowUpDown className="h-4 w-4" />
-              Sort: {sort === "date" ? "Storage date" : sort === "qty" ? "Quantity" : "Urgency"}
+              {tl("Sort")}: {sort === "date" ? tl("Storage date") : sort === "qty" ? tl("Quantity") : tl("Urgency")}
             </button>
-            <button onClick={reset} className="neu-btn !px-3" title="Reset filters">
+            <button onClick={reset} className="neu-btn !px-3" title={tl("Reset filters")}>
               <RotateCcw className="h-4 w-4" />
             </button>
           </div>
@@ -165,16 +167,16 @@ function InventoryInner() {
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-white/50 text-[11px] uppercase tracking-wide text-ink-faint">
-                <Th>Crop</Th>
-                <Th>Category</Th>
-                <Th>Batch</Th>
-                <Th className="text-right">Quantity</Th>
-                <Th>Warehouse</Th>
-                <Th>Location</Th>
-                <Th>Stored On</Th>
-                <Th>Duration</Th>
-                <Th>Status</Th>
-                <Th className="text-right">Actions</Th>
+                <Th>{tl("Crop")}</Th>
+                <Th>{tl("Category")}</Th>
+                <Th>{tl("Batch")}</Th>
+                <Th className="text-right">{tl("Quantity")}</Th>
+                <Th>{tl("Warehouse")}</Th>
+                <Th>{tl("Location")}</Th>
+                <Th>{tl("Stored On")}</Th>
+                <Th>{tl("Duration")}</Th>
+                <Th>{tl("Status")}</Th>
+                <Th className="text-right">{tl("Actions")}</Th>
               </tr>
             </thead>
             <tbody>
@@ -185,13 +187,13 @@ function InventoryInner() {
                       <span className="text-lg">{cropEmoji(b.crop)}</span>
                       <span className="font-semibold text-ink">{b.crop}</span>
                       {fifo[b.category] === b.id && (
-                        <span className="neu-chip bg-sky/10 text-sky" title="FIFO: sell this batch first">
+                        <span className="neu-chip bg-sky/10 text-sky" title={tl("FIFO: sell this batch first")}>
                           FIFO
                         </span>
                       )}
                     </div>
                   </Td>
-                  <Td muted>{b.category}</Td>
+                  <Td muted>{tl(b.category)}</Td>
                   <Td>
                     <span className="font-mono text-xs">{b.id}</span>
                   </Td>
@@ -199,7 +201,7 @@ function InventoryInner() {
                     {fmt(b.quantity)} <span className="text-xs text-ink-faint">{b.unit}</span>
                   </Td>
                   <Td muted>{warehouses.find((w) => w.id === b.warehouseId)?.name}</Td>
-                  <Td muted>Rack {b.rack}</Td>
+                  <Td muted>{tl("Rack")} {b.rack}</Td>
                   <Td muted>{istDateShort(b.storedAt)}</Td>
                   <Td muted>{storageDuration(b.storedAt)}</Td>
                   <Td>
@@ -207,7 +209,7 @@ function InventoryInner() {
                   </Td>
                   <Td className="text-right">
                     <Link href={`/batch/${b.id}`} className="neu-btn !px-3 !py-1.5 text-xs">
-                      View
+                      {tl("View")}
                     </Link>
                   </Td>
                 </tr>
@@ -218,8 +220,8 @@ function InventoryInner() {
         {rows.length === 0 && (
           <EmptyState
             icon={<Filter className="h-7 w-7" />}
-            title="No inventory found"
-            message="Try changing your filters or add a new crop batch."
+            title={tl("No inventory found")}
+            message={tl("Try changing your filters or add a new crop batch.")}
           />
         )}
       </Card>
@@ -244,7 +246,7 @@ function InventoryInner() {
                     <div>
                       <p className="font-bold text-ink">{b.crop}</p>
                       <p className="text-xs text-ink-faint">
-                        <span className="font-mono">{b.id}</span> · Rack {b.rack}
+                        <span className="font-mono">{b.id}</span> · {tl("Rack")} {b.rack}
                       </p>
                     </div>
                   </div>

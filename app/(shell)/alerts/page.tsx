@@ -5,6 +5,7 @@ import Link from "next/link";
 import { BellRing, CheckCircle2, Eye, RotateCcw, ChevronRight } from "lucide-react";
 import { useStore } from "@/providers/store";
 import { useToast } from "@/providers/toast";
+import { useLanguage } from "@/lib/i18n";
 import { Card, EmptyState } from "@/components/ui";
 import type { AlertPriority, AlertState, AlertType } from "@/lib/types";
 import { fmt } from "@/lib/format";
@@ -33,6 +34,7 @@ const STATES: (AlertState | "all")[] = ["all", "Open", "In Review", "Resolved"];
 export default function AlertsPage() {
   const { alerts, setAlertState, can } = useStore();
   const { toast } = useToast();
+  const { t, tl } = useLanguage();
   const [type, setType] = useState<AlertType | "all">("all");
   const [state, setState] = useState<AlertState | "all">("Open");
 
@@ -52,17 +54,17 @@ export default function AlertsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-black tracking-tight text-ink">Alerts · Needs Attention</h1>
+        <h1 className="text-2xl font-black tracking-tight text-ink">{t("page.alerts.title")}</h1>
         <p className="text-sm text-ink-soft">
-          Review and resolve the batches that need action.
+          {t("page.alerts.subtitle")}
         </p>
       </div>
 
       {/* Priority summary */}
       <div className="grid grid-cols-3 gap-3">
-        <SummaryCard label="Open" value={counts.Open} tone="text-chili" />
-        <SummaryCard label="In Review" value={counts["In Review"]} tone="text-amber" />
-        <SummaryCard label="Resolved" value={counts.Resolved} tone="text-leaf" />
+        <SummaryCard label={tl("Open")} value={counts.Open} tone="text-chili" />
+        <SummaryCard label={tl("In Review")} value={counts["In Review"]} tone="text-amber" />
+        <SummaryCard label={tl("Resolved")} value={counts.Resolved} tone="text-leaf" />
       </div>
 
       {/* Filters */}
@@ -78,7 +80,7 @@ export default function AlertsPage() {
                   state === s && "!shadow-inset text-leaf-dark"
                 )}
               >
-                {s}
+                {tl(s)}
               </button>
             ))}
           </div>
@@ -87,9 +89,9 @@ export default function AlertsPage() {
             value={type}
             onChange={(e) => setType(e.target.value as AlertType | "all")}
           >
-            {TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t === "all" ? "All alert types" : t}
+            {TYPES.map((tp) => (
+              <option key={tp} value={tp}>
+                {tp === "all" ? tl("All alert types") : tl(tp)}
               </option>
             ))}
           </select>
@@ -101,8 +103,8 @@ export default function AlertsPage() {
         <Card>
           <EmptyState
             icon={<CheckCircle2 className="h-7 w-7 text-leaf" />}
-            title="Nothing here"
-            message="No alerts match the current filters."
+            title={tl("Nothing here")}
+            message={tl("No alerts match the current filters.")}
           />
         </Card>
       ) : (
@@ -116,9 +118,9 @@ export default function AlertsPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className={cn("neu-chip", PRIORITY_STYLE[a.priority])}>
-                      {a.priority}
+                      {tl(a.priority)}
                     </span>
-                    <span className="text-sm font-bold text-ink">{a.type}</span>
+                    <span className="text-sm font-bold text-ink">{tl(a.type)}</span>
                     <span
                       className={cn(
                         "neu-chip",
@@ -129,19 +131,19 @@ export default function AlertsPage() {
                           : "bg-base text-ink-soft shadow-inset-sm"
                       )}
                     >
-                      {a.state}
+                      {tl(a.state)}
                     </span>
                   </div>
                   <p className="mt-1 text-sm text-ink-soft">{a.message}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Link href={`/batch/${a.batchId}`} className="neu-btn !px-3 !py-2 text-xs">
-                    Open <ChevronRight className="h-4 w-4" />
+                    {t("alerts.open")} <ChevronRight className="h-4 w-4" />
                   </Link>
                   {can("approve_actions") ? (
                     <div className="flex gap-1">
                       <button
-                        title="Mark In Review"
+                        title={tl("Mark In Review")}
                         onClick={() => {
                           setAlertState(a.id, "In Review");
                           toast("info", "In review", a.message);
@@ -152,7 +154,7 @@ export default function AlertsPage() {
                         <Eye className="h-4 w-4" />
                       </button>
                       <button
-                        title={a.state === "Resolved" ? "Reopen" : "Resolve"}
+                        title={a.state === "Resolved" ? tl("Reopen") : tl("Resolve")}
                         onClick={() => {
                           const next = a.state === "Resolved" ? "Open" : "Resolved";
                           setAlertState(a.id, next);
@@ -175,7 +177,7 @@ export default function AlertsPage() {
                     </div>
                   ) : (
                     <span className="flex items-center gap-1 text-[11px] text-ink-faint">
-                      <BellRing className="h-3.5 w-3.5" /> review by manager
+                      <BellRing className="h-3.5 w-3.5" /> {tl("review by manager")}
                     </span>
                   )}
                 </div>

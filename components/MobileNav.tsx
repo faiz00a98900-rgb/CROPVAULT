@@ -4,11 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MOBILE_ITEMS } from "./nav";
 import { useStore } from "@/providers/store";
+import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/cn";
 
 export function MobileNav() {
   const pathname = usePathname();
   const { can } = useStore();
+  const { t } = useLanguage();
   const items = MOBILE_ITEMS.filter((i) => !i.perm || can(i.perm as never));
 
   return (
@@ -36,7 +38,7 @@ export function MobileNav() {
                 >
                   <Icon className="h-5 w-5" />
                 </span>
-                <span className="truncate">{item.label.split(" ")[0]}</span>
+                <span className="truncate">{t(item.labelKey)}</span>
               </Link>
             </li>
           );

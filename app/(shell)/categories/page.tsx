@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Tags, ChevronRight, Leaf, Apple, Wheat, Snowflake, Sprout } from "lucide-react";
 import { useStore } from "@/providers/store";
+import { useLanguage } from "@/lib/i18n";
 import { Card, StatusBadge } from "@/components/ui";
 import { CATEGORIES, categoryTotals, toKg } from "@/lib/selectors";
 import { computeFreshness } from "@/lib/freshness";
@@ -29,15 +30,16 @@ const CAT_COLOR: Record<Category, string> = {
 
 export default function CategoriesPage() {
   const { visibleBatches } = useStore();
+  const { t: tt } = useLanguage();
   const totals = categoryTotals(visibleBatches);
   const grand = totals.reduce((s, t) => s + t.value, 0) || 1;
 
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-black tracking-tight text-ink">Categories</h1>
+        <h1 className="text-2xl font-black tracking-tight text-ink">{tt("page.categories.title")}</h1>
         <p className="text-sm text-ink-soft">
-          Stock grouped by crop category across your warehouses.
+          {tt("page.categories.subtitle")}
         </p>
       </div>
 

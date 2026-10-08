@@ -12,6 +12,7 @@ import {
   Lock,
 } from "lucide-react";
 import { useStore } from "@/providers/store";
+import { useLanguage } from "@/lib/i18n";
 import { Card } from "@/components/ui";
 import { istDateShort, istTime, timeAgo } from "@/lib/time";
 import { fmt } from "@/lib/format";
@@ -34,6 +35,7 @@ const MATRIX: { label: string; manager: boolean; worker: boolean }[] = [
 
 export default function SecurityPage() {
   const { user, audit, accessibleWarehouseIds } = useStore();
+  const { t } = useLanguage();
   const [tab, setTab] = useState<"activity" | "audit">("activity");
 
   const lastLogin = audit.find((a) => a.action === "Signed in");
@@ -41,9 +43,9 @@ export default function SecurityPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-black tracking-tight text-ink">Security Center</h1>
+        <h1 className="text-2xl font-black tracking-tight text-ink">{t("page.security.title")}</h1>
         <p className="text-sm text-ink-soft">
-          Access control, session status and a full audit trail of inventory changes.
+          {t("page.security.subtitle")}
         </p>
       </div>
 

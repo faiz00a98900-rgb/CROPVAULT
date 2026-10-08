@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useStore } from "@/providers/store";
 import { useToast } from "@/providers/toast";
+import { useLanguage } from "@/lib/i18n";
 import { Card } from "@/components/ui";
 import { Modal } from "@/components/Modal";
 import { CATEGORIES } from "@/lib/selectors";
@@ -29,6 +30,7 @@ export default function AddInventoryPage() {
   const router = useRouter();
   const { addBatch, accessibleWarehouseIds, activeWarehouseId, batches, can } = useStore();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const [mode, setMode] = useState<"scan" | "manual">("manual");
   const [scanOpen, setScanOpen] = useState(false);
@@ -147,10 +149,9 @@ export default function AddInventoryPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-5">
       <div>
-        <h1 className="text-2xl font-black tracking-tight text-ink">Add Inventory</h1>
+        <h1 className="text-2xl font-black tracking-tight text-ink">{t("page.addInventory.title")}</h1>
         <p className="text-sm text-ink-soft">
-          Scan an existing tag once, or enter details manually. Storage date &amp; time are captured
-          automatically.
+          {t("page.addInventory.subtitle")}
         </p>
       </div>
 

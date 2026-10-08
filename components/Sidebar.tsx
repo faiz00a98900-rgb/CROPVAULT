@@ -6,6 +6,7 @@ import { LogOut, Leaf } from "lucide-react";
 import { NAV_ITEMS } from "./nav";
 import { Logo } from "./ui";
 import { useStore } from "@/providers/store";
+import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/cn";
 
 export function Sidebar({
@@ -17,6 +18,7 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
   const { user, can, logout } = useStore();
+  const { t } = useLanguage();
 
   const items = NAV_ITEMS.filter(
     (i) => !i.perm || can(i.perm as never)
@@ -30,7 +32,7 @@ export function Sidebar({
           <div className="leading-tight">
             <p className="text-base font-black tracking-tight text-ink">CROPVAULT</p>
             <p className="text-[10px] font-medium uppercase tracking-wider text-ink-faint">
-              Crop Warehouse
+              {t("brand.cropWarehouse")}
             </p>
           </div>
         )}
@@ -47,12 +49,12 @@ export function Sidebar({
               key={item.href}
               href={item.href}
               onClick={onNavigate}
-              title={collapsed ? item.label : undefined}
+              title={collapsed ? t(item.labelKey) : undefined}
               className={cn("neu-nav-item", collapsed && "justify-center px-0")}
               data-active={active}
             >
               <Icon className={cn("h-5 w-5 shrink-0", active && "text-leaf-dark")} />
-              {!collapsed && <span className="truncate">{item.label}</span>}
+              {!collapsed && <span className="truncate">{t(item.labelKey)}</span>}
             </Link>
           );
         })}
@@ -62,11 +64,10 @@ export function Sidebar({
         <div className="mx-2 mb-2 rounded-xl2 bg-base p-3 shadow-inset-sm">
           <div className="flex items-center gap-2 text-leaf-dark">
             <Leaf className="h-4 w-4" />
-            <p className="text-xs font-bold">Secure session</p>
+            <p className="text-xs font-bold">{t("sidebar.secureSession")}</p>
           </div>
           <p className="mt-1 text-[11px] leading-snug text-ink-soft">
-            Role-based access enforced. Signed in as{" "}
-            <span className="font-semibold text-ink">{user?.name}</span>.
+            {t("sidebar.roleEnforced", { name: user?.name ?? "" })}
           </p>
         </div>
       )}
@@ -81,7 +82,7 @@ export function Sidebar({
         )}
       >
         <LogOut className="h-5 w-5 shrink-0" />
-        {!collapsed && <span>Log out</span>}
+        {!collapsed && <span>{t("sidebar.logOut")}</span>}
       </button>
     </div>
   );

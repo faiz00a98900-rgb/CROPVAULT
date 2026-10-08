@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Sprout } from "lucide-react";
 import type { FreshnessStatus } from "@/lib/types";
 import { freshnessMeta } from "@/lib/freshness";
+import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/cn";
 
 export function Card({
@@ -59,11 +60,12 @@ export function StatusBadge({
   status: FreshnessStatus;
   className?: string;
 }) {
+  const { tl } = useLanguage();
   const meta = freshnessMeta(status);
   return (
     <span className={cn("neu-chip", meta.bg, meta.color, className)}>
       <span className={cn("h-1.5 w-1.5 rounded-full", STATUS_DOT[status])} />
-      {status}
+      {tl(status)}
     </span>
   );
 }

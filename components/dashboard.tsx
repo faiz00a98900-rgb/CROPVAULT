@@ -14,6 +14,7 @@ import type { LucideIcon } from "lucide-react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { cn } from "@/lib/cn";
 import { useStore } from "@/providers/store";
+import { useLanguage } from "@/lib/i18n";
 import { Card, StatusBadge, FreshnessBar } from "./ui";
 import { fmt, fmtKg, fmtTonnes } from "@/lib/format";
 import { cropEmoji, warehouses } from "@/lib/demo-data";
@@ -100,6 +101,7 @@ const RECOMMENDATION: Record<string, string> = {
 };
 
 export function NeedsAttention({ batches }: { batches: Batch[] }) {
+  const { tl } = useLanguage();
   const rows = batches
     .map((b) => ({ b, f: computeFreshness(b) }))
     .filter(({ f }) =>
@@ -112,19 +114,19 @@ export function NeedsAttention({ batches }: { batches: Batch[] }) {
     <Card className="fade-up p-5">
       <div className="mb-1 flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-ink">Needs Attention</h2>
+          <h2 className="text-lg font-bold text-ink">{tl("Needs Attention")}</h2>
           <p className="text-sm text-ink-soft">
-            Batches that require action now — sorted by urgency &amp; freshness.
+            {tl("Batches that require action now — sorted by urgency & freshness.")}
           </p>
         </div>
         <Link href="/alerts" className="neu-btn !py-2 text-xs">
-          View all <ChevronRight className="h-4 w-4" />
+          {tl("View all")} <ChevronRight className="h-4 w-4" />
         </Link>
       </div>
 
       {rows.length === 0 ? (
         <div className="py-10 text-center text-sm text-ink-soft">
-          🎉 Nothing needs attention right now. All stock is fresh.
+          {tl("🎉 Nothing needs attention right now. All stock is fresh.")}
         </div>
       ) : (
         <div className="mt-3 space-y-3">
@@ -159,7 +161,7 @@ export function NeedsAttention({ batches }: { batches: Batch[] }) {
                 </div>
                 <FreshnessBar consumed={f.consumed} status={f.status} className="mt-2" />
                 <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-faint">
-                  Recommendation: {RECOMMENDATION[f.status]}
+                  Recommendation: {tl(RECOMMENDATION[f.status])}
                 </p>
               </div>
             </Link>
@@ -188,10 +190,11 @@ export function CategoryDonut({
   data: { name: string; value: number; percent: number }[];
   totalKg: number;
 }) {
+  const { tl } = useLanguage();
   return (
     <Card className="fade-up p-5">
-      <h2 className="text-lg font-bold text-ink">Inventory by Category</h2>
-      <p className="text-sm text-ink-soft">Distribution of stock across the warehouse.</p>
+      <h2 className="text-lg font-bold text-ink">{tl("Inventory by Category")}</h2>
+      <p className="text-sm text-ink-soft">{tl("Distribution of stock across the warehouse.")}</p>
       <div className="relative mx-auto mt-2 h-56 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -224,7 +227,7 @@ export function CategoryDonut({
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-2xl font-black text-ink">{fmtTonnes(totalKg)}</span>
           <span className="text-xs font-semibold uppercase tracking-wide text-ink-faint">
-            Total Inventory
+            {tl("Total Inventory")}
           </span>
         </div>
       </div>
@@ -235,7 +238,7 @@ export function CategoryDonut({
               className="h-2.5 w-2.5 rounded-full"
               style={{ background: CAT_COLORS[d.name] }}
             />
-            <span className="text-ink-soft">{d.name}</span>
+            <span className="text-ink-soft">{tl(d.name)}</span>
             <span className="ml-auto font-semibold text-ink">{d.percent}%</span>
           </li>
         ))}
@@ -249,13 +252,14 @@ export function CategoryDonut({
 /* ------------------------------------------------------------------ */
 export function WarehouseOverview({ batches }: { batches: Batch[] }) {
   const { accessibleWarehouseIds, activeWarehouseId } = useStore();
+  const { tl } = useLanguage();
   const list = warehouses.filter((w) => accessibleWarehouseIds.includes(w.id));
   return (
     <Card className="fade-up p-5">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-ink">Warehouse Overview</h2>
-          <p className="text-sm text-ink-soft">Tap a warehouse to open its inventory.</p>
+          <h2 className="text-lg font-bold text-ink">{tl("Warehouse Overview")}</h2>
+          <p className="text-sm text-ink-soft">{tl("Tap a warehouse to open its inventory.")}</p>
         </div>
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -286,9 +290,9 @@ export function WarehouseOverview({ batches }: { batches: Batch[] }) {
               </div>
 
               <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-                <Stat label="Stock" value={fmtKg(s.stock)} />
-                <Stat label="Batches" value={String(s.batches)} />
-                <Stat label="Alerts" value={String(s.alerts)} tone={s.alerts ? "chili" : undefined} />
+                <Stat label={tl("Stock")} value={fmtKg(s.stock)} />
+                <Stat label={tl("Batches")} value={String(s.batches)} />
+                <Stat label={tl("Alerts")} value={String(s.alerts)} tone={s.alerts ? "chili" : undefined} />
               </div>
 
               <div className="mt-3">
@@ -352,13 +356,14 @@ const ACTION_LABEL: Record<Movement["action"], { text: string; cls: string }> = 
 };
 
 export function ActivityFeed({ movements }: { movements: Movement[] }) {
+  const { tl } = useLanguage();
   const recent = movements.slice(0, 8);
   return (
     <Card className="fade-up p-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-ink">Recent Activity</h2>
+        <h2 className="text-lg font-bold text-ink">{tl("Recent Activity")}</h2>
         <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-leaf">
-          <span className="live-dot h-2 w-2 rounded-full bg-leaf" /> Live
+          <span className="live-dot h-2 w-2 rounded-full bg-leaf" /> {tl("Live")}
         </span>
       </div>
       <ol className="mt-4 space-y-3">
@@ -373,7 +378,7 @@ export function ActivityFeed({ movements }: { movements: Movement[] }) {
                     {fmt(m.quantity)} {m.crop === "" ? "" : ""}
                     {m.crop && <span> {m.crop}</span>}
                   </span>{" "}
-                  <span className={cn("font-semibold", a.cls)}>{a.text}</span>
+                  <span className={cn("font-semibold", a.cls)}>{tl(a.text)}</span>
                 </p>
                 <p className="text-[11px] text-ink-faint">
                   {m.batchId} · {timeAgo(m.at)} · {m.by}

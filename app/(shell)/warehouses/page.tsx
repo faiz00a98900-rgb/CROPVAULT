@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MapPin, Boxes, TriangleAlert, Grid3x3, PieChart, History } from "lucide-react";
 import { useStore } from "@/providers/store";
+import { useLanguage } from "@/lib/i18n";
 import { Card, StatusBadge } from "@/components/ui";
 import { warehouses, warehouseRacks, cropEmoji } from "@/lib/demo-data";
 import { warehouseStats, categoryTotals } from "@/lib/selectors";
@@ -22,6 +23,7 @@ function WarehousesInner() {
     activeWarehouseId,
     setActiveWarehouse,
   } = useStore();
+  const { t } = useLanguage();
 
   const list = warehouses.filter((w) => accessibleWarehouseIds.includes(w.id));
 
@@ -70,9 +72,9 @@ function WarehousesInner() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-black tracking-tight text-ink">Warehouses</h1>
+        <h1 className="text-2xl font-black tracking-tight text-ink">{t("page.warehouses.title")}</h1>
         <p className="text-sm text-ink-soft">
-          Storage facilities, sections and racks — tap a warehouse to explore.
+          {t("page.warehouses.subtitle")}
         </p>
       </div>
 

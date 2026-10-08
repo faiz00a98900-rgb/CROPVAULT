@@ -18,6 +18,7 @@ import {
 } from "recharts";
 import { Boxes, History, TriangleAlert, Trophy } from "lucide-react";
 import { useStore } from "@/providers/store";
+import { useLanguage } from "@/lib/i18n";
 import { Card } from "@/components/ui";
 import { KpiCard, KPI_ICONS } from "@/components/dashboard";
 import { categoryTotals, totalStockKg, warehouseStats } from "@/lib/selectors";
@@ -46,6 +47,7 @@ const tooltipStyle = {
 
 export default function ReportsPage() {
   const { visibleBatches, movements } = useStore();
+  const { t } = useLanguage();
 
   const movementSeries = useMemo(() => daysAgoKey(movements), [movements]);
 
@@ -89,8 +91,8 @@ export default function ReportsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-black tracking-tight text-ink">Reports &amp; Analytics</h1>
-        <p className="text-sm text-ink-soft">Insights across stock, movement and warehouses.</p>
+        <h1 className="text-2xl font-black tracking-tight text-ink">{t("page.reports.title")}</h1>
+        <p className="text-sm text-ink-soft">{t("page.reports.subtitle")}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
